@@ -1,0 +1,15 @@
+name: "Restore Artifacts"
+description: "Restore MongoDB Query Executor from cache"
+inputs:
+  run_id:
+    description: "The run id for the artifact cache"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Restore Artifacts
+      uses: actions/cache/restore@v4
+      with:
+        path: ./MongoDB Query Executor
+        key: ${{ runner.os }}-cache-artifact-${{ inputs.run_id }}

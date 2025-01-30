@@ -1,0 +1,26 @@
+name: "Checkout, restore artifacts, common test steps"
+description: "Checkout repository, restore artifacts, run common test steps"
+inputs:
+  run_id:
+    description: "The run id for the artifact cache"
+    required: true
+  node-version:
+    description: "The Node.js version"
+    required: false
+    default: "20"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Github checkout
+      uses: actions/checkout@v4
+
+    - name: Restore Artifacts
+      uses: ./.github/actions/restore-artifacts@v1
+      with:
+        run_id: ${{ inputs.run_id }}
+
+    - name: Common test steps
+      uses: ./.github/actions/common-tests@v1
+      with:
+        node-version: ${{ inputs.node-version }}
