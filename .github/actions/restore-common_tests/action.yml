@@ -1,4 +1,4 @@
-name: "Checkout, restore artifacts, common test steps"
+name: "restore artifacts, common test steps"
 description: "Checkout repository, restore artifacts, run common test steps"
 inputs:
   run_id:
@@ -12,9 +12,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Github checkout
-      uses: actions/checkout@v4
-
     - name: Restore Artifacts
       uses: ./.github/actions/restore-artifacts@v1
       with:

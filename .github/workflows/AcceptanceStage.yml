@@ -106,13 +106,16 @@ jobs:
       VITE_VERSION_API: localhost:8080/api/check-version
     needs: [fetch_run_id, cache-artifact]
     steps:
-      - name: Checkout, restore, and common test steps
-        uses: ./.github/actions/checkout-restore-common
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore artifacts and common test steps
+        uses: ./.github/actions/restore-common_tests
         with:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
           node-version: 20
 
-      - name: Run Acceptance Test Theme Stubbing script that sests a theme env var
+      - name: Run Acceptance Test Theme Stubbing script that sets a theme env var
         run: ./automated_testing/prepare-for-acceptance-tests.sh
 
       - name: Run Acceptance Tests
@@ -130,8 +133,11 @@ jobs:
     runs-on: macos-latest
     needs: [fetch_run_id, cache-artifact]
     steps:
-      - name: Checkout, restore, and common test steps
-        uses: ./.github/actions/checkout-restore-common
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore artifacts and common test steps
+        uses: ./.github/actions/restore-common_tests
         with:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
           node-version: 20
