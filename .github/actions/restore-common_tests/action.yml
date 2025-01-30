@@ -13,11 +13,11 @@ runs:
   using: "composite"
   steps:
     - name: Restore Artifacts
-      uses: ./.github/actions/restore-artifacts@v1
+      uses: ./.github/actions/restore-artifacts
       with:
         run_id: ${{ inputs.run_id }}
 
     - name: Common test steps
-      uses: ./.github/actions/common-tests@v1
+      uses: ./.github/actions/common-tests
       with:
         node-version: ${{ inputs.node-version }}
