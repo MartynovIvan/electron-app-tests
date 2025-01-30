@@ -15,16 +15,21 @@ runs:
         node-version: ${{ inputs.node-version }}
 
     - name: Install dependencies
+      shell: bash
       run: npm ci
 
     - name: Set Permissions to bash scripts
+      shell: bash
       run: chmod 755 ./automated_testing/*.sh
 
     - name: Run application installation
+      shell: bash
       run: ./automated_testing/install.sh
 
     - name: Start Mock services
+      shell: bash
       run: ./automated_testing/mock-start.sh
 
     - name: Run Smoke Tests and Health Checks
+      shell: bash
       run: ./automated_testing/run-smoke-tests.sh
