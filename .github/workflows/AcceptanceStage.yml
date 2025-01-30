@@ -107,7 +107,7 @@ jobs:
     needs: [fetch_run_id, cache-artifact]
     steps:
       - name: Checkout, restore, and common test steps
-        uses: ./.github/actions/checkout-restore-common@v1
+        uses: ./.github/actions/checkout-restore-common
         with:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
           node-version: 20
@@ -131,7 +131,7 @@ jobs:
     needs: [fetch_run_id, cache-artifact]
     steps:
       - name: Checkout, restore, and common test steps
-        uses: ./.github/actions/checkout-restore-common@v1
+        uses: ./.github/actions/checkout-restore-common
         with:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
           node-version: 20
@@ -151,7 +151,7 @@ jobs:
     needs: [acceptance_env, e2e_env, fetch_run_id]
     steps:
       - name: Restore Artifacts
-        uses: ./.github/actions/restore-artifacts@v1
+        uses: ./.github/actions/restore-artifacts
         with:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
 
