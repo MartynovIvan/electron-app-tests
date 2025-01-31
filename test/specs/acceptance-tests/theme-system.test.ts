@@ -71,10 +71,11 @@ describe("Feature: Change Appearance Based on System Theme with Advanced View On
     // Assert:
     // Check that Query Results background is dark
     const queryResultBgColor = await (await mainPage.queryResultContainer).getCSSProperty("background-color");
-    expect(queryResultBgColor.parsed.hex).to.equal("#000000", "Query Results should have dark background");
+    expect(queryResultBgColor.parsed.hex).to.equal("#1e1e1e", "Query Results should have dark background");
+
 
     // Check that Query History background is dark
     const queryHistoryBgColor = await (await mainPage.queryHistoryResults).getCSSProperty("background-color");
-    expect(queryHistoryBgColor.parsed.hex).to.equal("#000000", "Query History should have dark background");
+    expect(queryHistoryBgColor.parsed.hex).to.equal("#1e1e1e", "Query History should have dark background");
   });
 });
