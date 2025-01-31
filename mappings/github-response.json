@@ -1,14 +1,14 @@
 {
-    "request": {
-        "method": "GET",
-        "url": "/api/check-version"
+  "request": {
+    "method": "GET",
+    "url": "/api/check-version"
+  },
+  "response": {
+    "status": 200,
+    "body": "{ \"tag_name\": \"v10.0.0\" }",
+    "headers": {
+      "Content-Type": "application/json"
     },
-    "response": {
-        "status": 200,
-        "body": "{ \"tag_name\": \"v10.0.0\" }",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "transformers": ["response-template"]
-      }
+    "transformers": ["response-template"]
+  }
 }

@@ -1,5 +1,3 @@
-// import { browser } from "wdio-electron-service";
-
 export class MenuBar {
   title?: string;
 

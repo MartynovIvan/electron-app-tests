@@ -20,12 +20,12 @@ db.test.insertMany([
 ])
 EOF
 
-if [ "$E2E_ENV" = true ]; then
+if [ "$ACP_ENV" = true ]; then
     echo "Installing WireMock..."
     brew install wiremock-standalone
 
     echo "Starting WireMock..."
     wiremock --local-response-templating --port 8080 & sleep 5
 else
-    echo "E2E_ENV is not set to true. Skipping Wiremock execution."
+    echo "ACP_ENV env is not set to true. Skipping Wiremock execution."
 fi

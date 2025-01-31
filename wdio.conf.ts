@@ -33,10 +33,7 @@ export const config: WebdriverIO.Config = {
     e2e: ["./test/specs/e2e-tests/*.ts"],
     external: ["./test/specs/external-system-contracts/*.ts"],
     smoke: [
-      [
-        "./test/specs/health-checks/*.ts",
-        "./test/specs/smoke-tests/*.ts",
-      ],
+      ["./test/specs/health-checks/*.ts", "./test/specs/smoke-tests/*.ts"],
     ],
   },
   // Patterns to exclude.

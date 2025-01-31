@@ -1,6 +1,6 @@
 import { browser } from "@wdio/globals";
 
-import { AppDriver } from "../types";
+import type { AppDriver } from "../types";
 
 export class APIAppDriver implements AppDriver {
   private driver = browser;

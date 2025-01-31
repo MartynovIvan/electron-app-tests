@@ -103,15 +103,13 @@ jobs:
     runs-on: macos-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      VITE_VERSION_API: localhost:8080/api/check-version
+      OWMER: ${{ github.repository_owner }}
+      VITE_VERSION_API: http://localhost:8080/api/check-version
+      ACP_ENV: true
     needs: [fetch_run_id, cache-artifact]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      # Optional Debugging Step
-      - name: List restore-common_tests directory
-        run: ls -la ./.github/actions/restore-common_tests
 
       - name: Restore artifacts and common test steps
         uses: ./.github/actions/restore-common_tests
@@ -133,16 +131,13 @@ jobs:
     env:
       VITE_VERSION_API: localhost:8080/api/check-version
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWMER: ${{ github.repository_owner }}
       E2E_ENV: true
     runs-on: macos-latest
     needs: [fetch_run_id, cache-artifact]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      # Optional Debugging Step
-      - name: List restore-common_tests directory
-        run: ls -la ./.github/actions/restore-common_tests
 
       - name: Restore artifacts and common test steps
         uses: ./.github/actions/restore-common_tests
@@ -164,6 +159,9 @@ jobs:
     runs-on: macos-latest
     needs: [acceptance_env, e2e_env, fetch_run_id]
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Restore Artifacts
         uses: ./.github/actions/restore-artifacts
         with:

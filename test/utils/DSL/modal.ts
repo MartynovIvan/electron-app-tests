@@ -36,14 +36,19 @@ export class SettingsModal {
     return Promise.resolve($('[data-testid="systemThemeSelector"]'));
   }
 
-  /// Retrieves apply modal button
+  // Retrieves apply modal button
   get applyButton(): Promise<WebdriverIO.Element> {
     return Promise.resolve($('[data-testid="applySeetingsModalButton"]'));
   }
 
-  /// Retrieves cancel modal button
+  // Retrieves cancel modal button
   get cancelButton(): Promise<WebdriverIO.Element> {
     return Promise.resolve($('[data-testid="cancelSeetingsModalButton"]'));
+  }
+
+  // Retrieves cancel modal button
+  get advancedViewOnStartCheckbox(): Promise<WebdriverIO.Element> {
+    return Promise.resolve($('[data-testid="advancedViewOnStartCheckbox"]'));
   }
 
   // Interactions
@@ -87,6 +92,12 @@ export class SettingsModal {
   async clickCancelButton(): Promise<void> {
     const button = await this.cancelButton;
     await button?.click();
+  }
+
+  // Simulates a click on advancedViewOnStart checkbox
+  async clickAdvancedViewOnStartCheckbox(): Promise<void> {
+    const advancedViewOnStartCheckbox = await this.advancedViewOnStartCheckbox;
+    await advancedViewOnStartCheckbox?.click();
   }
 }
 

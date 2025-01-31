@@ -5,6 +5,10 @@ import MainPage from "../../utils/DSL/mainPage";
 import Modal from "../../utils/DSL/modal";
 import MenuBar from "../../utils/DSL/menuBar";
 
+import { WireMock } from "wiremock-captain";
+import { GithubStubDriver } from "../../utils/drivers/GithubStubDriver";
+import { GithubStubDsl } from "../../utils/DSL/GithubStubDsl";
+
 //Seeing Persisting Query History should run first
 
 describe("Seeing Persisting Query History", async () => {
@@ -99,7 +103,7 @@ describe("Seeing Persisting Query History", async () => {
   });
 });
 
-describe("MongoDB Query Execution Test", () => {
+describe("MongoDB Query Execution Test", async () => {
   let mainPage: MainPage;
 
   beforeEach(() => {
@@ -157,7 +161,7 @@ describe("Advanced View Toggle Test", () => {
   });
 });
 
-describe(" Viewing Results in JSON Format", async () => {
+describe("Viewing Results in JSON Format", async () => {
   it("should successfully run a find query and have a Query Result in JSON format", async () => {
     const mainPage = new MainPage();
     await mainPage.setQueryText(`{"name":"test1"}`);
@@ -432,5 +436,76 @@ describe("Select Theme", async () => {
       "light-theme",
       "The root element incorrectly has the 'light-theme' class when it should not."
     );
+  });
+});
+
+//Maintainable Acceptance Test start
+
+describe("Version", async () => {
+  let mainPage: MainPage;
+
+  const githubStubDsl = new GithubStubDsl(
+    new GithubStubDriver(
+      new WireMock(`${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}`)
+    )
+  );
+
+  beforeEach(() => {
+    mainPage = new MainPage();
+  });
+
+  it("should successfully check version against stub", async () => {
+    const appVersion = await githubStubDsl.getVersion();
+
+    await expect(appVersion).toBeDefined();
+  });
+});
+
+//Maintainable Acceptance Test end
+
+describe.skip("Advanced View Startup Preference", async () => {
+  it("should enable Advanced View on startup", async () => {
+    await browser.reloadSession();
+
+    const mainPage = new MainPage();
+
+    const settingsModal = new Modal();
+
+    const appMenu = new MenuBar("MongoDB Query Executor");
+
+    const appMenuExists = await appMenu.doesAppMenuExist();
+
+    assert.equal(
+      appMenuExists,
+      true,
+      "MongoDB Query Executor menu item exists"
+    );
+
+    const successfulClickOnAppMenu = await appMenu.doMenuClickById("appName");
+
+    assert.equal(
+      successfulClickOnAppMenu,
+      true,
+      "Click on MongoDB Query Executor"
+    );
+
+    const successfulClickOnSettingMenu = await appMenu.doMenuClickById(
+      "settings"
+    );
+
+    assert.equal(successfulClickOnSettingMenu, true, "Click on Settings");
+
+    const settingsModalVisible = await settingsModal.modal;
+
+    await expect(settingsModalVisible).toBeDisplayed();
+
+    await settingsModal.clickAdvancedViewOnStartCheckbox();
+    await settingsModal.clickApplyButton();
+
+    await browser.reloadSession();
+
+    const queryHistoryResults = await mainPage.queryHistoryResults;
+
+    await expect(queryHistoryResults).toBeDisabled();
   });
 });
