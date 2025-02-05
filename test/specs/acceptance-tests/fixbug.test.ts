@@ -6,7 +6,6 @@ import Modal from "../../utils/DSL/modal";
 import MenuBar from "../../utils/DSL/menuBar";
 
 import { WireMock } from "wiremock-captain";
-import { ThemeStubDriver } from "../../utils/drivers/ThemeStubDriver";
 import { RealThemeDriver } from "../../utils/drivers/ThemeStubDriver";
 import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
 
@@ -23,7 +22,7 @@ describe("Theme Change Acceptance Test", async () => {
 
   beforeEach(async () => {
     app = new AppDrivers(wireMock);
-    // For this test we use the real driver so we can trigger system theme changes.
+    // Use the real theme driver so that system theme can be set.
     themeStub = new ThemeStubDsl(new RealThemeDriver(wireMock));
     appMenu = new MenuBar("MongoDB Query Executor");
     settingsModal = new Modal();
@@ -31,13 +30,13 @@ describe("Theme Change Acceptance Test", async () => {
   });
 
   it("should use the related background colour for Query results and Query History fields", async () => {
-    // Given the app has already opened using the light theme (handled by test setup)
+    // Given the app has already opened using the light theme
     await themeStub.willReturnLightTheme();
 
     // And Advanced view is toggled on
     await mainPage.toggleAdvancedView();
 
-    // Open Settings and set theme to “system”
+    // Open Settings and set theme to "system"
     const successfulClickOnSettingMenu = await appMenu.doMenuClickById("settings");
     assert.equal(successfulClickOnSettingMenu, true, "Click on Settings");
     await settingsModal.selectTheme("system");
@@ -47,20 +46,29 @@ describe("Theme Change Acceptance Test", async () => {
     await themeStub.willReturnDarkTheme();
     await app.themeStubDsl.setTheme("system");
 
-    // Instead of checking the <html> class list, we now verify that the cards have the dark background colour.
+    // Run a dummy query so that the Query Result container is rendered
+    const queryInput = await browser.$('[data-testid="query"]');
+    await queryInput.setValue("{}");
+    const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
+    await runQueryButton.click();
+
+    // Wait until the Query Result element appears
+    await browser.waitUntil(async () => {
+      const elements = await browser.$$( '[data-testid="queryResult"]' );
+      return elements.length > 0;
+    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
+
     // Define the expected dark background color (derived from #1e1e1e)
     const expectedDarkBg = "rgb(30, 30, 30)";
 
-    // Get the Query Results container element by its test id
+    // Retrieve the Query Result container element
     const queryResultElem = await browser.$('[data-testid="queryResult"]');
-    // Get the Query History container element by its test id (where the bug was observed)
+    // Retrieve the Query History container element using the DSL method
     const queryHistoryElem = await mainPage.queryHistoryResults;
 
-    // Retrieve the computed background colors
     const queryResultBg = await queryResultElem.getCSSProperty("background-color");
     const queryHistoryBg = await queryHistoryElem.getCSSProperty("background-color");
 
-    // Assert that both elements have the expected dark background color
     assert.equal(
       queryResultBg.value,
       expectedDarkBg,
