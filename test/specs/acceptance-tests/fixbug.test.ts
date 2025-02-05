@@ -1,5 +1,7 @@
 import { assert } from "chai";
 import { browser } from "wdio-electron-service";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 import MainPage from "../../utils/DSL/mainPage";
 import Modal from "../../utils/DSL/modal";
@@ -11,10 +13,15 @@ import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
 
 import { AppDsl, AppDrivers } from "../../utils/DSL/dsl";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 describe("Theme Change Acceptance Test", async () => {
   let app: AppDrivers;
   let themeStub: ThemeStubDsl;
-  const wireMock = new WireMock(`${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}`);
+  const wireMock = new WireMock(
+    `${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}`
+  );
 
   let appMenu: MenuBar;
   let settingsModal: Modal;
@@ -46,17 +53,17 @@ describe("Theme Change Acceptance Test", async () => {
     await themeStub.willReturnDarkTheme();
     await app.themeStubDsl.setTheme("system");
 
-    // // Run a dummy query so that the Query Result container is rendered
-    // const queryInput = await browser.$('[data-testid="query"]');
-    // await queryInput.setValue("{}");
-    // const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
-    // await runQueryButton.click();
-    //
-    // // Wait until the Query Result element appears
-    // await browser.waitUntil(async () => {
-    //   const elements = await browser.$$( '[data-testid="queryResult"]' );
-    //   return elements.length > 0;
-    // }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
+    // Run a dummy query so that the Query Result container is rendered
+    const queryInput = await browser.$('[data-testid="query"]');
+    await queryInput.setValue("{}");
+    const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
+    await runQueryButton.click();
+
+    // Wait until the Query Result element appears
+    await browser.waitUntil(async () => {
+      const elements = await browser.$$( '[data-testid="queryResult"]' );
+      return elements.length > 0;
+    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
 
     // Define the expected dark background color (derived from #1e1e1e)
     const expectedDarkBg = "rgba(0,0,0,0)";
@@ -79,5 +86,27 @@ describe("Theme Change Acceptance Test", async () => {
       expectedDarkBg,
       "The Query History container does not have the expected dark background color."
     );
+  });
+
+  afterEach(async () => {
+    // Clean out the queries table in the SQLite DB so this test does not leave a record behind.
+    const sqlite3Module = await import("sqlite3");
+    const sqlite3 = sqlite3Module.default || sqlite3Module;
+    const dbPath = join(__dirname, "..", "..", "..", "..", "my-electron-app", "backend", "localStorage", "app.db");
+    await new Promise((resolve, reject) => {
+      const db = new sqlite3.verbose().Database(dbPath, sqlite3.OPEN_READWRITE, (err: Error) => {
+        if (err) {
+          return reject(err);
+        }
+        db.run("DELETE FROM queries", (error: any) => {
+          if (error) {
+            db.close();
+            return reject(error);
+          }
+          db.close();
+          resolve(true);
+        });
+      });
+    });
   });
 });
