@@ -1,7 +1,5 @@
 import { assert } from "chai";
 import { browser } from "wdio-electron-service";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 import MainPage from "../../utils/DSL/mainPage";
 import Modal from "../../utils/DSL/modal";
@@ -12,10 +10,7 @@ import { RealThemeDriver } from "../../utils/drivers/ThemeStubDriver";
 import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
 
 import { AppDsl, AppDrivers } from "../../utils/DSL/dsl";
-import { cleanQueriesTable } from "./utils/dbutils";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 describe("Theme Change Acceptance Test", async () => {
   let app: AppDrivers;
@@ -87,9 +82,5 @@ describe("Theme Change Acceptance Test", async () => {
       expectedDarkBg,
       "The Query History container does not have the expected dark background color."
     );
-  });
-
-  afterEach(async () => {
-    await cleanQueriesTable();
   });
 });
