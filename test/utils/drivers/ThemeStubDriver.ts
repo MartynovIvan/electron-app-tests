@@ -1,24 +1,21 @@
 import {
   IWireMockRequest,
   IWireMockResponse,
-  WireMock
+  WireMock,
 } from "wiremock-captain";
 import { browser } from "@wdio/globals";
 
-import type {AppDriver} from "../types";
+import type { AppDriver } from "../types";
 
 export class BaseThemeDriver implements AppDriver {
-  constructor() {
-  }
+  constructor() {}
 
-  public async setQuery(query: string) {
-  }
+  public async setQuery(query: string) {}
 
-  public async clickRunQuery() {
-  }
+  public async clickRunQuery() {}
 
   public async getQueryResult() {
-    return  Promise.resolve("")
+    return Promise.resolve("");
   }
 }
 export class ThemeStubDriver extends BaseThemeDriver {
@@ -34,7 +31,7 @@ export class ThemeStubDriver extends BaseThemeDriver {
     this.driver = driver;
   }
 
-  public async setTheme(theme: 'light' | 'dark' | 'system'){
+  public async setTheme(theme: "light" | "dark" | "system") {
     this.currentTheme = theme;
     console.log(`Setting theme to: ${theme}`);
     return Promise.resolve();
@@ -46,7 +43,7 @@ export class ThemeStubDriver extends BaseThemeDriver {
       body: { theme: "light" },
     };
     await this.driver.register(this.themeRequest, mockedResponse);
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   public async willReturnDarkTheme() {
@@ -55,11 +52,11 @@ export class ThemeStubDriver extends BaseThemeDriver {
       body: { theme: "dark" },
     };
     await this.driver.register(this.themeRequest, mockedResponse);
-    return Promise.resolve()
+    return Promise.resolve();
   }
 }
 
-export class RealThemeDriver  extends BaseThemeDriver {
+export class RealThemeDriver extends BaseThemeDriver {
   private driver: WebdriverIO.Browser = browser;
   private currentTheme: "light" | "dark" | "system" = "light";
   constructor(wireMock: WireMock) {
@@ -67,19 +64,19 @@ export class RealThemeDriver  extends BaseThemeDriver {
   }
 
   async setTheme(theme: string): Promise<void> {
-    console.log('SET THEME IN RealThemeDriver', theme);
-    this.currentTheme = theme as "light" | "dark" | "system" ;
-    return  this.driver.execute(async (electron, theme) => {
-      await electron.app.setSystemTheme(theme)
-      return  ;
+    console.log("SET THEME IN RealThemeDriver", theme);
+    this.currentTheme = theme as "light" | "dark" | "system";
+    return this.driver.execute(async (electron, theme) => {
+      await electron.app.setSystemTheme(theme);
+      return;
     }, theme);
   }
 
   async willReturnLightTheme() {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   async willReturnDarkTheme() {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 }

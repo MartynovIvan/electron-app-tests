@@ -1,4 +1,3 @@
-import nock from "nock";
 import { assert } from "chai";
 import * as semver from "semver";
 import { WireMock } from "wiremock-captain";
@@ -6,8 +5,8 @@ import { WireMock } from "wiremock-captain";
 import {
   GithubStubDriver,
   RealGithubDriver,
-} from "../drivers/GithubStubDriver";
-import type { GithubDriver } from "../types";
+} from "../../../utils/drivers/GithubStubDriver";
+import type { GithubDriver } from "../../../utils/types";
 
 abstract class BaseGithubDriverTest {
   public erpDriver: GithubDriver;
@@ -23,7 +22,14 @@ abstract class BaseGithubDriverTest {
   }
 
   public async shouldReturnActualVersion() {
-    const response = await fetch(this.getVersionUrl());
+    const response = await fetch(this.getVersionUrl(), {
+      headers: {
+        "Content-Type": "application/json",
+        ...(process.env.GITHUB_TOKEN
+          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN as string}` }
+          : {}),
+      },
+    });
 
     const data = await response.json();
 
@@ -89,16 +95,9 @@ export class RealGithubDriverTest extends BaseGithubDriverTest {
   }
 
   public getVersionUrl() {
-    nock("https://api.github.com")
-      .get("/repos/vaisakhsasikumar/my-electron-app/releases/latest")
-      .reply(200, { tag_name: "v1.0.0" });
     return "https://api.github.com/repos/vaisakhsasikumar/my-electron-app/releases/latest";
   }
 
-  public async setupHigherVersion() {
-    this.driver.willReturnHigherVersion();
-  }
-  public async setupLowerVersion() {
-    this.driver.willReturnLowerVersion();
-  }
+  public async setupHigherVersion() {}
+  public async setupLowerVersion() {}
 }

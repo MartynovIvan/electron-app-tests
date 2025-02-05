@@ -9,7 +9,7 @@ import * as semver from "semver";
 
 import type { GithubDriver } from "../types";
 
-class BaseErpDriver implements GithubDriver {
+class BaseGithubDriver implements GithubDriver {
   private client: string = "";
 
   constructor() {}
@@ -33,7 +33,7 @@ class BaseErpDriver implements GithubDriver {
   public async willReturnLowerVersion() {}
 }
 
-export class GithubStubDriver extends BaseErpDriver {
+export class GithubStubDriver extends BaseGithubDriver {
   private driver: WireMock;
 
   private versionRequest: IWireMockRequest = {
@@ -75,20 +75,8 @@ export class GithubStubDriver extends BaseErpDriver {
   }
 }
 
-export class RealGithubDriver extends BaseErpDriver {
+export class RealGithubDriver extends BaseGithubDriver {
   constructor() {
     super();
-  }
-
-  public async willReturnHigherVersion() {
-    nock("https://api.github.com")
-      .get("/repos/vaisakhsasikumar/my-electron-app/releases/latest")
-      .reply(200, { tag_name: "v100.0.0" });
-  }
-
-  public async willReturnLowerVersion() {
-    nock("https://api.github.com")
-      .get("/repos/vaisakhsasikumar/my-electron-app/releases/latest")
-      .reply(200, { tag_name: "v0.0.01" });
   }
 }

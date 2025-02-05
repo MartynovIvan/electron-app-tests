@@ -15,7 +15,8 @@
   "scripts": {
     "test:acceptance": "dotenvx run --env TESTS=true -f .env.test -- wdio run ./wdio.conf.ts --suite acceptance",
     "test:e2e": "dotenvx run -f .env.test -- wdio run ./wdio.conf.ts --suite e2e",
-    "test:external": "dotenvx run --env TESTS=true -f .env.test -- wdio run ./wdio.conf.ts --suite external",
+    "test:externalStubs": "dotenvx run --env TESTS=true -f .env.test -- wdio run ./wdio.conf.ts --suite externalStubs",
+    "test:externalReal": "dotenvx run --env TESTS=true -f .env.test -- wdio run ./wdio.conf.ts --suite externalReal --suite externalThemeReal",
     "test:smoke": "dotenvx run -f .env.test -- wdio run ./wdio.conf.ts --suite smoke",
     "wdio": "wdio run ./wdio.conf.ts"
   },

@@ -123,6 +123,9 @@ jobs:
       - name: Run Acceptance Tests
         run: npm run test:acceptance
 
+      - name: Rub External system contract tests against stubs
+        run: npm run test:externalStubs
+
       - name: Stop Mock services
         run: ./automated_testing/mock-end.sh
 
@@ -145,8 +148,8 @@ jobs:
           run_id: ${{ needs.fetch_run_id.outputs.run_id }}
           node-version: 20
 
-      - name: Run External System Contract Tests
-        run: npm run test:external
+      - name: Run External System Contract Tests against Real
+        run: npm run test:externalReal
 
       - name: Run E2E Tests
         run: npm run test:e2e
