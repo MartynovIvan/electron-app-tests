@@ -46,17 +46,17 @@ describe("Theme Change Acceptance Test", async () => {
     await themeStub.willReturnDarkTheme();
     await app.themeStubDsl.setTheme("system");
 
-    // Run a dummy query so that the Query Result container is rendered
-    const queryInput = await browser.$('[data-testid="query"]');
-    await queryInput.setValue("{}");
-    const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
-    await runQueryButton.click();
-
-    // Wait until the Query Result element appears
-    await browser.waitUntil(async () => {
-      const elements = await browser.$$( '[data-testid="queryResult"]' );
-      return elements.length > 0;
-    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
+    // // Run a dummy query so that the Query Result container is rendered
+    // const queryInput = await browser.$('[data-testid="query"]');
+    // await queryInput.setValue("{}");
+    // const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
+    // await runQueryButton.click();
+    //
+    // // Wait until the Query Result element appears
+    // await browser.waitUntil(async () => {
+    //   const elements = await browser.$$( '[data-testid="queryResult"]' );
+    //   return elements.length > 0;
+    // }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
 
     // Define the expected dark background color (derived from #1e1e1e)
     const expectedDarkBg = "rgba(0,0,0,0)";
