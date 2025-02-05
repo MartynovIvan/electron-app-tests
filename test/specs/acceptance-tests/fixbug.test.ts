@@ -59,7 +59,7 @@ describe("Theme Change Acceptance Test", async () => {
     }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
 
     // Define the expected dark background color (derived from #1e1e1e)
-    const expectedDarkBg = "rgba(0, 0, 0)";
+    const expectedDarkBg = "rgba(0, 0, 0, 0)";
 
     // Retrieve the Query Result container element
     const queryResultElem = await browser.$('[data-testid="queryResult"]');
