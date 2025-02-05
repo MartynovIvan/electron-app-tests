@@ -111,6 +111,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Display DB Path
+        run: |
+          node -e "const { join } = require('path'); console.log('DB Path:', join(process.cwd(), '..', 'my-electron-app', 'backend', 'localStorage', 'app.db'));"
+
       - name: Restore artifacts and common test steps
         uses: ./.github/actions/restore-common_tests
         with:
