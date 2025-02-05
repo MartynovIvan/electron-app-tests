@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { browser } from "wdio-electron-service";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname } from "path";
 
 import MainPage from "../../utils/DSL/mainPage";
 import Modal from "../../utils/DSL/modal";
@@ -12,6 +12,7 @@ import { RealThemeDriver } from "../../utils/drivers/ThemeStubDriver";
 import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
 
 import { AppDsl, AppDrivers } from "../../utils/DSL/dsl";
+import { cleanQueriesTable } from "./utils/dbutils";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,15 +62,15 @@ describe("Theme Change Acceptance Test", async () => {
 
     // Wait until the Query Result element appears
     await browser.waitUntil(async () => {
-      const elements = await browser.$$( '[data-testid="queryResult"]' );
+      const elements = await browser.$$('[data-testid="queryResult"]');
       return elements.length > 0;
-    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' } );
+    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' });
 
-    // Define the expected dark background color (derived from #1e1e1e)
+    // Define the expected dark background color (as provided)
     const expectedDarkBg = "rgba(0,0,0,0)";
 
-    // Retrieve the Query Result container element
-    const queryResultElem = await browser.$('[data-testid="queryResult"]');
+    // Retrieve the Query Result container using the DSL method
+    const queryResultElem = await mainPage.queryResultContainer;
     // Retrieve the Query History container element using the DSL method
     const queryHistoryElem = await mainPage.queryHistoryResults;
 
@@ -89,24 +90,6 @@ describe("Theme Change Acceptance Test", async () => {
   });
 
   afterEach(async () => {
-    // Clean out the queries table in the SQLite DB so this test does not leave a record behind.
-    const sqlite3Module = await import("sqlite3");
-    const sqlite3 = sqlite3Module.default || sqlite3Module;
-    const dbPath = join(__dirname, "..", "..", "..", "..", "my-electron-app", "backend", "localStorage", "app.db");
-    await new Promise((resolve, reject) => {
-      const db = new sqlite3.verbose().Database(dbPath, sqlite3.OPEN_READWRITE, (err: Error) => {
-        if (err) {
-          return reject(err);
-        }
-        db.run("DELETE FROM queries", (error: any) => {
-          if (error) {
-            db.close();
-            return reject(error);
-          }
-          db.close();
-          resolve(true);
-        });
-      });
-    });
+    await cleanQueriesTable();
   });
 });

@@ -23,6 +23,7 @@
   "dependencies": {
     "@dotenvx/dotenvx": "^1.34.0",
     "semver": "^7.6.3",
+    "sqlite3": "^5.1.7",
     "wdio-electron-service": "^7.3.1",
     "wiremock-captain": "^3.5.0"
   }
