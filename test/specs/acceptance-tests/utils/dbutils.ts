@@ -12,13 +12,25 @@ export async function cleanQueriesTable(): Promise<void> {
     return;
   }
   const sqlite3 = sqlite3Module.default || sqlite3Module;
-  const dbPath = join(__dirname, "..", "..", "..", "..", "my-electron-app", "backend", "localStorage", "app.db");
+  const dbPath = join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "..",
+    "my-electron-app",
+    "backend",
+    "localStorage",
+    "app.db"
+  );
+  const verbose = sqlite3.verbose();
+  const Database = verbose.Database;
   await new Promise((resolve, reject) => {
-    const db = new sqlite3.verbose().Database(dbPath, sqlite3.OPEN_READWRITE, (err: Error | null) => {
+    const db = new Database(dbPath, sqlite3.OPEN_READWRITE, (err: Error | null) => {
       if (err) {
         return reject(err);
       }
-      db.run("DELETE FROM queries", (error: any) => {
+      db.run("DELETE FROM queries", (error: Error | null) => {
         if (error) {
           db.close();
           return reject(error);
