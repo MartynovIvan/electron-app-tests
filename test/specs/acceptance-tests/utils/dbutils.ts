@@ -1,7 +1,4 @@
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from "path";
 
 export async function cleanQueriesTable(): Promise<void> {
   let sqlite3Module;
@@ -12,19 +9,10 @@ export async function cleanQueriesTable(): Promise<void> {
     return;
   }
   const sqlite3 = sqlite3Module.default || sqlite3Module;
-  // Go up five levels then into my-electron-app/backend/localStorage/app.db
-  const dbPath = join(
-    __dirname,
-    "..",
-    "..",
-    "..",
-    "..",
-    "..",
-    "my-electron-app",
-    "backend",
-    "localStorage",
-    "app.db"
-  );
+  // Compute DB path using process.cwd(). In our pipeline, process.cwd() is expected to be
+  // /Users/runner/work/electron-app-tests/electron-app-tests so that going one level up reaches
+  // /Users/runner/work/electron-app-tests, where my-electron-app is a sibling.
+  const dbPath = join(process.cwd(), "..", "my-electron-app", "backend", "localStorage", "app.db");
   console.log(`Debug: using SQLite DB path: ${dbPath}`);
   const verbose = sqlite3.verbose();
   const Database = verbose.Database;
