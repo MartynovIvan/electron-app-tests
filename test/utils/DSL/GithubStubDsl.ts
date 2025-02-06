@@ -1,4 +1,4 @@
-import { GithubStubDriver } from "../drivers/GithubStubDriver";
+import { GithubStubDriver } from "../drivers/GithubDrivers";
 
 /**
  * GithubStubDsl should be inside describe (on top of that).

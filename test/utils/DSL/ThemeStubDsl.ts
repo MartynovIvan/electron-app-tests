@@ -1,5 +1,5 @@
 import { THEME } from "../const";
-import { ThemeStubDriver } from "../drivers/ThemeStubDriver";
+import { ThemeStubDriver } from "../drivers/ThemeDrivers";
 
 export class ThemeStubDsl {
   private driver: ThemeStubDriver;
@@ -20,5 +20,5 @@ export class ThemeStubDsl {
     await this.driver.willReturnDarkTheme();
   }
 
-  public async willReturnSystemheme() {}
+  public async willReturnSystemTheme() {}
 }

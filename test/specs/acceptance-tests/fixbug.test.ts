@@ -4,7 +4,7 @@ import { browser } from "wdio-electron-service";
 import { Channels, THEME } from "../../utils/const";
 import { AppDrivers, AppDsl } from "../../utils/DSL/dsl";
 import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
-import { ThemeStubDriver } from "../../utils/drivers/ThemeStubDriver";
+import { ThemeStubDriver } from "../../utils/drivers/ThemeDrivers";
 
 describe("Theme Change Acceptance Test", async () => {
   const application = new AppDsl(new AppDrivers([Channels.UI, Channels.API]));

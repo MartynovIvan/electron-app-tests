@@ -4,7 +4,7 @@ import { browser } from "wdio-electron-service";
 
 import { AppDsl, AppDrivers } from "../../utils/DSL/dsl";
 import { GithubStubDsl } from "../../utils/DSL/GithubStubDsl";
-import { GithubStubDriver } from "../../utils/drivers/GithubStubDriver";
+import { GithubStubDriver } from "../../utils/drivers/GithubDrivers";
 import { Channels, THEME } from "../../utils/const";
 
 //Seeing Persisting Query History should run first

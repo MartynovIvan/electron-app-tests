@@ -1,5 +1,3 @@
-import nock from "nock";
-import { assert } from "chai";
 import {
   IWireMockRequest,
   IWireMockResponse,
@@ -18,15 +16,10 @@ class BaseGithubDriver implements GithubDriver {
     this.client = client;
   }
 
-  public async shouldHaveHigherVersion(version: string) {
+  public async getCleanVersion(): Promise<string> {
     const response = await fetch(this.client);
     const data = await response.json();
-    assert(semver.clean(data.tag_name) == version);
-  }
-  public async shouldHaveLowerVersion(version: string) {
-    const response = await fetch(this.client);
-    const data = await response.json();
-    assert(semver.clean(data.tag_name) == version);
+    return semver.clean(data.tag_name) || "";
   }
 
   public async willReturnHigherVersion() {}
@@ -50,9 +43,7 @@ export class GithubStubDriver extends BaseGithubDriver {
     const response = await fetch(
       `${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}/api/check-version`
     );
-
     const data = await response.json();
-
     return data.tag_name;
   }
 

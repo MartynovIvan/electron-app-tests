@@ -3,7 +3,7 @@ import { WireMock } from "wiremock-captain";
 import {
   ThemeStubDriver,
   RealThemeDriver,
-} from "../../../utils/drivers/ThemeStubDriver";
+} from "../../../utils/drivers/ThemeDrivers";
 import type { ThemeDriver } from "../../../utils/types";
 
 abstract class BaseThemeDriverTest {
@@ -37,13 +37,13 @@ export class ThemeStubDriverTest extends BaseThemeDriverTest {
 
   constructor() {
     super();
-    const erpStub = new WireMock(this.baseUrl);
-    this.driver = new ThemeStubDriver(erpStub);
+    const wireMockDriver = new WireMock(this.baseUrl);
+    this.driver = new ThemeStubDriver(wireMockDriver);
   }
 
   public createThemeDriver() {
-    const erpStub = new WireMock(this.baseUrl);
-    const driver = new ThemeStubDriver(erpStub);
+    const wireMockDriver = new WireMock(this.baseUrl);
+    const driver = new ThemeStubDriver(wireMockDriver);
 
     driver.setup(this.getVersionUrl());
 
