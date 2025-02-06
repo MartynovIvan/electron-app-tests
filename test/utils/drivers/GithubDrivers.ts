@@ -1,3 +1,4 @@
+import { assert } from "chai";
 import {
   IWireMockRequest,
   IWireMockResponse,
@@ -16,10 +17,15 @@ class BaseGithubDriver implements GithubDriver {
     this.client = client;
   }
 
-  public async getCleanVersion(): Promise<string> {
+  public async shouldHaveHigherVersion(version: string) {
     const response = await fetch(this.client);
     const data = await response.json();
-    return semver.clean(data.tag_name) || "";
+    assert(semver.clean(data.tag_name) == version);
+  }
+  public async shouldHaveLowerVersion(version: string) {
+    const response = await fetch(this.client);
+    const data = await response.json();
+    assert(semver.clean(data.tag_name) == version);
   }
 
   public async willReturnHigherVersion() {}
@@ -43,7 +49,9 @@ export class GithubStubDriver extends BaseGithubDriver {
     const response = await fetch(
       `${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}/api/check-version`
     );
+
     const data = await response.json();
+
     return data.tag_name;
   }
 

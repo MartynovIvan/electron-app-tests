@@ -20,8 +20,10 @@ export interface AppDriver {
 
 export interface GithubDriver {
   willReturnHigherVersion: () => Promise<void>;
+  shouldHaveHigherVersion: (version: string) => Promise<void>;
+
   willReturnLowerVersion: () => Promise<void>;
-  getCleanVersion: () => Promise<string>;
+  shouldHaveLowerVersion: (version: string) => Promise<void>;
 }
 
 export interface ThemeDriver {
