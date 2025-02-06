@@ -1,4 +1,4 @@
-import { WireMock } from "wiremock-captain";
+import { THEME } from "../const";
 import { ThemeStubDriver } from "../drivers/ThemeStubDriver";
 
 export class ThemeStubDsl {
@@ -8,14 +8,17 @@ export class ThemeStubDsl {
     this.driver = driver;
   }
 
-  public async setTheme(theme: 'light' | 'dark' | 'system'){
+  public async setTheme(theme: THEME) {
     await this.driver.setTheme(theme);
   }
 
   public async willReturnLightTheme() {
     await this.driver.willReturnLightTheme();
   }
+
   public async willReturnDarkTheme() {
     await this.driver.willReturnDarkTheme();
   }
+
+  public async willReturnSystemheme() {}
 }

@@ -1,86 +1,61 @@
-import { assert } from "chai";
+import { WireMock } from "wiremock-captain";
 import { browser } from "wdio-electron-service";
 
-import MainPage from "../../utils/DSL/mainPage";
-import Modal from "../../utils/DSL/modal";
-import MenuBar from "../../utils/DSL/menuBar";
-
-import { WireMock } from "wiremock-captain";
-import { RealThemeDriver } from "../../utils/drivers/ThemeStubDriver";
+import { Channels, THEME } from "../../utils/const";
+import { AppDrivers, AppDsl } from "../../utils/DSL/dsl";
 import { ThemeStubDsl } from "../../utils/DSL/ThemeStubDsl";
-
-import { AppDsl, AppDrivers } from "../../utils/DSL/dsl";
-
+import { ThemeStubDriver } from "../../utils/drivers/ThemeStubDriver";
 
 describe("Theme Change Acceptance Test", async () => {
-  let app: AppDrivers;
-  let themeStub: ThemeStubDsl;
-  const wireMock = new WireMock(
-    `${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}`
+  const application = new AppDsl(new AppDrivers([Channels.UI, Channels.API]));
+
+  const themeStub = new ThemeStubDsl(
+    new ThemeStubDriver(
+      new WireMock(`${process.env.WIREMOCK_HOST}:${process.env.WIREMOCK_PORT}`)
+    )
   );
 
-  let appMenu: MenuBar;
-  let settingsModal: Modal;
-  let mainPage: MainPage;
-
-  beforeEach(async () => {
-    app = new AppDrivers(wireMock);
-    // Use the real theme driver so that system theme can be set.
-    themeStub = new ThemeStubDsl(new RealThemeDriver(wireMock));
-    appMenu = new MenuBar("MongoDB Query Executor");
-    settingsModal = new Modal();
-    mainPage = new MainPage();
-  });
-
   it("should use the related background colour for Query results and Query History fields", async () => {
+    await browser.reloadSession();
+
     // Given the app has already opened using the light theme
     await themeStub.willReturnLightTheme();
 
     // And Advanced view is toggled on
-    await mainPage.toggleAdvancedView();
+    await application.toggleAdvancedView();
 
-    // Open Settings and set theme to "system"
-    const successfulClickOnSettingMenu = await appMenu.doMenuClickById("settings");
-    assert.equal(successfulClickOnSettingMenu, true, "Click on Settings");
-    await settingsModal.selectTheme("system");
-    await settingsModal.clickApplyButton();
+    await application.clickOnAppMenu();
 
-    // When the computer appearance is changed from Light to Dark theme
+    await application.clickOnSettingsMenu();
+
+    await application.selectApplicationTheme(THEME.SYSTEM);
+
+    await application.clickApplySettings();
+
     await themeStub.willReturnDarkTheme();
-    await app.themeStubDsl.setTheme("system");
 
-    // Run a dummy query so that the Query Result container is rendered
-    const queryInput = await browser.$('[data-testid="query"]');
-    await queryInput.setValue("{}");
-    const runQueryButton = await browser.$('[data-testid="runQueryButton"]');
-    await runQueryButton.click();
+    await themeStub.setTheme(THEME.SYSTEM);
 
-    // Wait until the Query Result element appears
-    await browser.waitUntil(async () => {
-      const elements = await browser.$$('[data-testid="queryResult"]');
-      return elements.length > 0;
-    }, { timeout: 5000, timeoutMsg: 'Expected queryResult to be rendered' });
+    await application.setQuery("{}");
+
+    await application.clickRunQuery();
 
     // Define the expected dark background color (as provided)
     const expectedDarkBg = "rgba(0,0,0,0)";
 
-    // Retrieve the Query Result container using the DSL method
-    const queryResultElem = await mainPage.queryResultContainer;
-    // Retrieve the Query History container element using the DSL method
-    const queryHistoryElem = await mainPage.queryHistoryResults;
+    const queryResultElem = await application.getQueryResultContainer();
 
-    const queryResultBg = await queryResultElem.getCSSProperty("background-color");
-    const queryHistoryBg = await queryHistoryElem.getCSSProperty("background-color");
+    const queryHistoryElem =
+      await application.getQueryHistoryResultsContainer();
 
-    assert.equal(
-      queryResultBg.value,
-      expectedDarkBg,
-      "The Query Results container does not have the expected dark background color."
+    await application.checkApplicationElementHasExpectedBackgroundColor(
+      queryResultElem,
+      expectedDarkBg
     );
-    assert.equal(
-      queryHistoryBg.value,
-      expectedDarkBg,
-      "The Query History container does not have the expected dark background color."
+
+    await application.checkApplicationElementHasExpectedBackgroundColor(
+      queryHistoryElem,
+      expectedDarkBg
     );
   });
 });

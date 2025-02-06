@@ -1,3 +1,5 @@
+import { THEME } from "../const";
+
 export class SettingsModal {
   // Selectors
 
@@ -72,11 +74,11 @@ export class SettingsModal {
   }
 
   // Selects a theme in the settings modal.
-  async selectTheme(theme: "light" | "dark" | "system"): Promise<void> {
+  async selectTheme(theme: THEME): Promise<void> {
     const themeSelectorMap = {
-      light: await this.lightThemeRadio,
-      dark: await this.darkThemeRadio,
-      system: await this.systemThemeRadio,
+      [THEME.LIGHT]: await this.lightThemeRadio,
+      [THEME.DARK]: await this.darkThemeRadio,
+      [THEME.SYSTEM]: await this.systemThemeRadio,
     };
     const themeInput = themeSelectorMap[theme];
     await themeInput.click();

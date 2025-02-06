@@ -82,8 +82,9 @@ export class MainPage {
   }
 
   async getLastQueryHistoryText(): Promise<string> {
-    const results = await this.queryHistoryResultsAllElements;
-    const lastElement = results[results.length - 1];
+    const lastElement = $(
+      '[data-testid="queryHistorySingleElement"]:last-of-type'
+    );
     const lastElementText = await lastElement.getText();
     return lastElementText;
   }

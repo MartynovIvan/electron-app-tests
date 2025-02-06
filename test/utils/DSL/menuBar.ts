@@ -14,10 +14,11 @@ export class MenuBar {
   // Simulates a click on the apply button in the settings modal.
   async doesAppMenuExist() {
     return browser.electron.execute(async (electron, title) => {
-      return (
+      return Boolean(
         electron.Menu.getApplicationMenu()?.getMenuItemById("appName")
           ?.label === title &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("appName")?.visible
+          electron.Menu.getApplicationMenu()?.getMenuItemById("appName")
+            ?.visible
       );
     }, this.appName);
   }
@@ -35,17 +36,18 @@ export class MenuBar {
 
   async checkMenuItems() {
     return browser.electron.execute(async (electron, title) => {
-      return (
+      return Boolean(
         electron.Menu.getApplicationMenu()?.getMenuItemById("about")?.label ===
           `About ${title}` &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("about")?.visible &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("settings")
-          ?.label === "Settings" &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("settings")
-          ?.visible &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("quit")?.label ===
-          `Quit ${title}` &&
-        electron.Menu.getApplicationMenu()?.getMenuItemById("quit")?.visible
+          electron.Menu.getApplicationMenu()?.getMenuItemById("about")
+            ?.visible &&
+          electron.Menu.getApplicationMenu()?.getMenuItemById("settings")
+            ?.label === "Settings" &&
+          electron.Menu.getApplicationMenu()?.getMenuItemById("settings")
+            ?.visible &&
+          electron.Menu.getApplicationMenu()?.getMenuItemById("quit")?.label ===
+            `Quit ${title}` &&
+          electron.Menu.getApplicationMenu()?.getMenuItemById("quit")?.visible
       );
     }, this.appName);
   }

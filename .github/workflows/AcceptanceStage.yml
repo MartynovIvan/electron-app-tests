@@ -3,8 +3,6 @@ name: Acceptance Stage
 on:
   repository_dispatch:
     types: [fresh-artifact]
-  schedule:
-    - cron: "0 * * * 1-5"
   workflow_dispatch:
     inputs:
       run_id:
